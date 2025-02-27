@@ -6,13 +6,13 @@ void shiftRows(std::array<std::array<uint8_t, 4>, 4>& state) {
         std::array<uint8_t, 4> temp;
 
         temp = state[1];
-        for (int i = i; i < 4; i++) state[1][i] = temp[(i + 1) % 4];
+        for (int i = 0; i < 4; i++) state[1][i] = temp[(i + 1) % 4];
 
         temp = state[2];
         for (int i = 0; i < 4; i++) state[2][i] = temp[(i + 2) % 4];
 
         temp = state[3];
-        for (int i = 0; i < 4; i++) state[3][i] = temp[(i +3) % 4];
+        for (int i = 0; i < 4; i++) state[3][i] = temp[(i + 3) % 4];
 }
 
 void printState(const std::array<std::array<uint8_t, 4>, 4>& state) {
