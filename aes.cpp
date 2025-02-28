@@ -258,5 +258,35 @@ int main() {
         std::cout << "After invMixColumns:\n";
         printState(state);
 
+        std::array<std::array<uint8_t, 4>, 4> plaintext = {{
+        {0x32, 0x88, 0x31, 0xE0},
+        {0x43, 0x5A, 0x31, 0x37},
+        {0xF6, 0x30, 0x98, 0x07},
+        {0xA8, 0x8D, 0xA2, 0x34}
+        }};
+
+        std::array<uint8_t, 16> key = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x3e, 0x1d, 0x4c, 0x9c, 0x8a, 0xe0};
+
+        std::array<uint32_t, 44> roundKeys;
+
+        keyExpansion(key, roundKeys);
+
+        std::cout << std::endl;
+
+        printState(plaintext);
+
+        std::cout << std::endl;
+
+        std::array<std::array<uint8_t, 4>, 4> ciphertext = plaintext;
+        aesEncrypt(ciphertext, roundKeys);
+        printState(ciphertext);
+
+        std::cout << std::endl;
+
+        std::array<std::array<uint8_t, 4>, 4> uncipheredText = ciphertext;
+        aesDecrypt(uncipheredText, roundKeys);
+        printState(uncipheredText);
+
+
         return 0;
 }
