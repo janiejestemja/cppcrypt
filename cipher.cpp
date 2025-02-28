@@ -63,6 +63,20 @@ void shiftRows(std::array<std::array<uint8_t, 4>, 4>& state) {
         for (int i = 0; i < 4; i++) state[3][i] = temp[(i + 3) % 4];
 }
 
+// inverse shift rows
+void invShiftRows(std::array<std::array<uint8_t, 4>, 4>& state) {
+        std::array<uint8_t, 4> temp;
+
+        temp = state[1];
+        for (int i = 0; i < 4; i++) state[1][i] = temp[(i - 1 + 4) % 4];
+
+        temp = state[2];
+        for (int i = 0; i < 4; i++) state[2][i] = temp[(i - 2 + 4) % 4];
+
+        temp = state[3];
+        for (int i = 0; i < 4; i++) state[3][i] = temp[(i - 3 + 4) % 4];
+}
+
 void printState(const std::array<std::array<uint8_t, 4>, 4>& state) {
         for (const auto& row : state) {
                 for (uint8_t byte : row) {
@@ -94,6 +108,19 @@ void mixColumns(std::array<std::array<uint8_t, 4>, 4>& state) {
                 temp[1] = state[0][c] ^ gmul(2, state[1][c]) ^ gmul(3, state[2][c]) ^ state[3][c];
                 temp[2] = state[0][c] ^ state[1][c] ^ gmul(2, state[2][c]) ^ gmul(3, state[3][c]);
                 temp[3] = gmul(3, state[0][c]) ^ state[1][c] ^ state[2][c] ^ gmul(2, state[3][c]);
+
+                for (int i = 0; i < 4; i++) state[i][c] = temp[i];
+        }
+}
+
+// Apply inverse MixColumns
+void invMixColumns(std::array<std::array<uint8_t, 4>, 4>& state) {
+        std::array<uint8_t, 4> temp;
+        for (int c = 0; c < 4; c++) {
+                temp[0] = gmul(14, state[0][c]) ^ gmul(11, state[1][c]) ^ gmul(13, state[2][c]) ^ gmul(9, state[3][c]);
+                temp[1] = gmul(9, state[0][c]) ^ gmul(14, state[1][c]) ^ gmul(11, state[2][c]) ^ gmul(13, state[3][c]);
+                temp[2] = gmul(13, state[0][c]) ^ gmul(9, state[1][c]) ^ gmul(14, state[2][c]) ^ gmul(11, state[3][c]);
+                temp[3] = gmul(11, state[0][c]) ^ gmul(13, state[1][c]) ^ gmul(9, state[2][c]) ^ gmul(14, state[3][c]);
 
                 for (int i = 0; i < 4; i++) state[i][c] = temp[i];
         }
@@ -143,6 +170,60 @@ void addRoundKey(std::array<std::array<uint8_t, 4>, 4>& state, const std::array<
         }
 }
 
+// subBytes
+void subBytes(std::array<std::array<uint8_t, 4>, 4>& state) {
+        for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j ++) {
+                        state[i][j] = aes_sbox(state[i][j]);
+                }
+        }
+}
+
+// inverse subBytes
+void invSubBytes(std::array<std::array<uint8_t, 4>, 4>& state) {
+        for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                        state[i][j] = aes_inv_sbox(state[i][j]);
+                }
+        }
+}
+
+// AES encryption
+void aesEncrypt(std::array<std::array<uint8_t, 4>, 4>& state, const std::array<uint32_t, 44>& roundKeys) {
+        // initial round
+        addRoundKey(state, {roundKeys[0], roundKeys[1], roundKeys[2], roundKeys[3]});
+
+        // Nine rounds of SubBytes, ShiftRows, MixColumns, AddRoundKey
+        for (int round = 1; round < 10; round++) {
+                subBytes(state);
+                shiftRows(state);
+                mixColumns(state);
+                addRoundKey(state, {roundKeys[round * 4], roundKeys[round * 4 + 1], roundKeys[round * 4 + 2], roundKeys[round * 4 + 3]});
+        }
+
+        // Final round (no MixColumns)
+        subBytes(state);
+        shiftRows(state);
+        addRoundKey(state, {roundKeys[40], roundKeys[41], roundKeys[42], roundKeys[43]});
+}
+
+// AES decryption
+void aesDecrypt(std::array<std::array<uint8_t, 4>, 4>& state, const std::array<uint32_t, 44>& roundKeys) {
+        addRoundKey(state, {roundKeys[40], roundKeys[41], roundKeys[42], roundKeys[43]});
+
+        for (int round = 9; round > 0; round--) {
+                invShiftRows(state);
+                invSubBytes(state);
+                addRoundKey(state, {roundKeys[round * 4], roundKeys[round * 4 + 1], roundKeys[round * 4 + 2], roundKeys[round * 4 + 3]});
+                invMixColumns(state);
+        }
+        
+        // Final round (no invMixColumns
+        invShiftRows(state);
+        invSubBytes(state);
+        addRoundKey(state, {roundKeys[0], roundKeys[1], roundKeys[2], roundKeys[3]});
+}
+
 int main() {
         uint8_t input = 0x53;
         std::cout << "S-Box[" << std::hex << (int)input << "] = " << std::hex << (int)aes_sbox(input) << std::endl;
@@ -162,9 +243,19 @@ int main() {
         std::cout << "After shiftRows:\n";
         printState(state);
 
+        invShiftRows(state);
+
+        std::cout << "After invShiftRows:\n";
+        printState(state);
+
         mixColumns(state);
 
         std::cout << "After mixColumns:\n";
+        printState(state);
+
+        invMixColumns(state);
+
+        std::cout << "After invMixColumns:\n";
         printState(state);
 
         return 0;
