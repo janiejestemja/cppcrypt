@@ -287,6 +287,14 @@ int main() {
         aesDecrypt(uncipheredText, roundKeys);
         printState(uncipheredText);
 
+        std::cout << std::endl;
+
+        // Check if decryption was successful
+        if (uncipheredText == plaintext) {
+                std::cout << "Decryption successful! 🎉" << std::endl;
+        } else {
+                std::cout << "Decryption failed! 😢" << std::endl;
+        }
 
         return 0;
 }
