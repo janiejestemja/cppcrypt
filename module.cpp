@@ -168,17 +168,6 @@ py::list py_aes_decrypt(py::object state_obj, py::array_t<uint32_t> roundKeys_ob
         return state_to_py(state);
 }
 
-// Convenience function to encrypt a block with just a key
-py::list py_aes_encrypt_block(py::object state_obj, py::object key_obj) {
-        auto roundKeys = py_key_expansion(key_obj);
-        return py_aes_encrypt(state_obj, roundKeys);
-}
-
-py::list py_aes_decrypt_block(py::object state_obj, py::object key_obj) {
-        auto roundKeys = py_key_expansion(key_obj);
-        return py_aes_decrypt(state_obj, roundKeys);
-}
-
 PYBIND11_MODULE(pyaes, m) {
         m.doc() = "Python wrapper for C++ AES implementation";
 
@@ -186,7 +175,4 @@ PYBIND11_MODULE(pyaes, m) {
 
         m.def("aes_encrypt", &py_aes_encrypt, "Encrypt a 4x4 state matrix using round keys", py::arg("state"), py::arg("round_keys"));
         m.def("aes_decrypt", &py_aes_decrypt, "Decrypt a 4x4 state matrix using round keys", py::arg("state"), py::arg("round_keys"));
-
-        m.def("aes_encrypt_block", py_aes_encrypt_block, "Encrypt a 4x4 state matrix using a key", py::arg("state"), py::arg("key"));
-        m.def("aes_decrypt_block", py_aes_decrypt_block, "Decrypt a 4x4 state matrix using a key", py::arg("state"), py::arg("key"));
 }
