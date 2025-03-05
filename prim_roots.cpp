@@ -60,7 +60,7 @@ int power_mod(int base, int exponent, int modulus) {
         base = base % modulus;
 
         while (exponent > 0) {
-                if (exponent % 2) {
+                if (exponent % 2 == 1) {
                         result = (1LL * result * base) % modulus;
                 }
                 exponent = exponent >> 1;
