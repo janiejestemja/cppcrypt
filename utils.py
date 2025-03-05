@@ -1,31 +1,31 @@
 from aes.pyaes import key_expansion, aes_encrypt, aes_decrypt
 
-def save_files(filename : str, cryptname : str):
+def save_files(file_name : str, crypt_name : str, key_name : str):
     key = bytes( 
         [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f]
     )
     round_keys = key_expansion(key)   
 
     # Encryption
-    states = str_to_states(read_text(filename="lore.txt"))
+    states = str_to_states(read_text(filename=file_name))
     cipherstates = []
     for state in states:
         cipherstates.append(aes_encrypt(state, round_keys))
 
     # Save encrypted file
-    save_crypt(cryptname, cipherstates)
+    save_crypt(crypt_name, cipherstates)
 
-    with open("key.txt", "w") as f:
+    with open(key_name, "w") as f:
         for ele in round_keys:
             f.write(str(ele) + "\n")
 
-def load_files(cryptname : str):
+def load_files(crypt_name : str, key_name : str) -> str:
     loaded_keys = []
-    with open("key.txt") as f:
+    with open(key_name) as f:
         reader = f.readlines()
         loaded_keys = [int(key.strip("\n")) for key in reader]
     # Load encrypted file
-    text_fromf = read_crypt(cryptname)
+    text_fromf = read_crypt(crypt_name)
 
     # Decryption
     decipheredstates = [aes_decrypt(state, loaded_keys) for state in text_fromf]

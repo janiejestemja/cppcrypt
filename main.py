@@ -3,20 +3,31 @@ import sys
 from utils import load_files, save_files
 
 def main():
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         sys.exit("Missing cla")
 
 
+    # Encryption
     if sys.argv[1] == "-en":
-        filename = sys.argv[2]
-        cryptname = sys.argv[3]
-        save_files(filename=filename, cryptname=cryptname)
+        file_name = sys.argv[2]
+        crypt_name = sys.argv[3]
+        key_name = sys.argv[4]
+        save_files(file_name=file_name, crypt_name=crypt_name, key_name=key_name)
 
+    # Decryption
     elif sys.argv[1] == "-de":
-        cryptname = sys.argv[2]
-        filename = sys.argv[3]
-        with open(filename, "w") as f:
-            f.write(load_files(cryptname=cryptname))
+        crypt_name = sys.argv[2]
+        key_name = sys.argv[3]
+        file_name = sys.argv[4]
+
+        # Priting 
+        if file_name == "-p":
+            print(load_files(crypt_name=crypt_name, keyname=key_name))
+
+        # Saving to file
+        else:
+            with open(file_name, "w") as f:
+                f.write(load_files(crypt_name=crypt_name, key_name=key_name))
 
 if __name__ == "__main__":
     main()
