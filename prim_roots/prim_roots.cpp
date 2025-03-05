@@ -1,3 +1,6 @@
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
 #include <iostream>
 #include <vector>
 #include <set>
@@ -128,7 +131,7 @@ bool verify_primitive_root(int g, int p) {
 }
 
 int main() {
-        int p = 13;
+        int p = 23;
 
         std::vector<int> roots = find_primitive_roots(p);
 
@@ -150,4 +153,26 @@ int main() {
                 }
         }
         return 0;
+}
+
+namespace py = pybind11;
+
+PYBIND11_MODULE(primitive_roots, m) {
+        m.doc() = "Primitive Roots Calculation Module";
+
+        m.def("gcd", &gcd, "Calculate the greatest common divisor of two numbers", py::arg("a"), py::arg("b"));
+
+        m.def("is_prime", &is_prime, "Check if a number is prime", py::arg("n"));
+
+        m.def("find_prime_factors", &find_prime_factors, "Find prime factors of a number", py::arg("n"));
+
+        m.def("power_mod", &power_mod, "Calculate (base^exponent) % modulus", py::arg("base"), py::arg("exponent"), py::arg("modulus"));
+
+        // Main primitive root functions
+        m.def("is_primitive_root", &is_primitive_root, "Check if g is a primitive root modulo p", py::arg("g"), py::arg("p"));
+
+        m.def("find_primitive_roots", &find_primitive_roots, "Find all primitive roots modulo p", py::arg("p"));
+
+        m.def("verify_primitve_root", &verify_primitive_root, "Verify a primitive root by generating all residues", py::arg("g"), py::arg("p"));
+
 }
