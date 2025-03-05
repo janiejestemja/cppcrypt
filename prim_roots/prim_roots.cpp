@@ -130,31 +130,6 @@ bool verify_primitive_root(int g, int p) {
         return true;
 }
 
-int main() {
-        int p = 23;
-
-        std::vector<int> roots = find_primitive_roots(p);
-
-        std::cout << "Primitive roots modulo " << p << ": ";
-        for (int root : roots) {
-                std::cout << root << " ";
-        }
-        std::cout << std::endl;
-
-        // Verify first primitive root
-        if (!roots.empty()) {
-                int g = roots[0];
-                bool verified = verify_primitive_root(g, p);
-
-                if (verified) {
-                        std::cout << "Verification: " << g << " generates all residues modulo " << p << std::endl;
-                } else {
-                        std::cout << "Verification failed." << std::endl;
-                }
-        }
-        return 0;
-}
-
 namespace py = pybind11;
 
 PYBIND11_MODULE(primitive_roots, m) {
@@ -173,6 +148,6 @@ PYBIND11_MODULE(primitive_roots, m) {
 
         m.def("find_primitive_roots", &find_primitive_roots, "Find all primitive roots modulo p", py::arg("p"));
 
-        m.def("verify_primitve_root", &verify_primitive_root, "Verify a primitive root by generating all residues", py::arg("g"), py::arg("p"));
+        m.def("verify_primitive_root", &verify_primitive_root, "Verify a primitive root by generating all residues", py::arg("g"), py::arg("p"));
 
 }
