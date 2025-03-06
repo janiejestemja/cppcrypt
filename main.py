@@ -22,7 +22,7 @@ def main():
 
         # Priting 
         if file_name == "-p":
-            print(load_files(crypt_name=crypt_name, keyname=key_name))
+            print(load_files(crypt_name=crypt_name, key_name=key_name))
 
         # Saving to file
         else:
