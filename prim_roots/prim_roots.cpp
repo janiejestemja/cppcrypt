@@ -8,9 +8,9 @@
 #include <algorithm>
 
 // Calculate greatest common divisor
-int gcd(int a, int b) {
+long int gcd(long int a,long int b) {
         while (b) {
-                int temp = b;
+                long int temp = b;
                 b = a % b;
                 a = temp;
         }
@@ -18,12 +18,12 @@ int gcd(int a, int b) {
 }
 
 // Check if prime
-bool is_prime(int n) {
+bool is_prime(long int n) {
         if (n <= 1) return false;
         if (n <= 3) return true;
         if (n % 2 == 0 || n % 3 == 0) return false;
 
-        for (int i = 5; i * i <= n; i += 6) {
+        for (long int i = 5; i * i <= n; i += 6) {
                 if (n % i == 0 || n % (i +2) == 0) {
                         return false;
                 }
@@ -32,8 +32,8 @@ bool is_prime(int n) {
 }
 
 // Find prime factors
-std::set<int> find_prime_factors(int n) {
-        std::set<int> factors;
+std::set<long int> find_prime_factors(long int n) {
+        std::set<long int> factors;
 
         // Handle divisibility by 2
         while (n % 2 == 0) {
@@ -42,7 +42,7 @@ std::set<int> find_prime_factors(int n) {
         }
 
         // Check odd divisiors
-        for (int i = 3; i * i <= n; i += 2) {
+        for (long int i = 3; i * i <= n; i += 2) {
                 while (n % i == 0) {
                         factors.insert(i);
                         n /= i;
@@ -58,8 +58,8 @@ std::set<int> find_prime_factors(int n) {
 }
 
 // Calculate (base^exponent) % modulus
-int power_mod(int base, int exponent, int modulus) {
-        int result = 1;
+long int power_mod(long int base, long int exponent, long int modulus) {
+        long int result = 1;
         base = base % modulus;
 
         while (exponent > 0) {
@@ -74,17 +74,17 @@ int power_mod(int base, int exponent, int modulus) {
 }
 
 // Check if g is primitive root modulo p
-bool is_primitive_root(int g, int p) {
+bool is_primitive_root(long int g, long int p) {
         if (gcd(g, p) != 1) {
                 return false;
         }
 
         // Find prime factors of p-1
-        int phi = p - 1;
-        std::set<int> prime_factors = find_prime_factors(phi);
+        long int phi = p - 1;
+        std::set<long int> prime_factors = find_prime_factors(phi);
 
         // Test conditions
-        for (int q : prime_factors) {
+        for (long int q : prime_factors) {
                 if (power_mod(g, phi / q, p) == 1) {
                         return false;
                 }
@@ -94,15 +94,15 @@ bool is_primitive_root(int g, int p) {
 }
 
 // Find all primitive roots modulo p
-std::vector<int> find_primitive_roots(int p) {
+std::vector<long int> find_primitive_roots(long int p) {
         if (!is_prime(p)) {
                 std::cerr << p << " is not a prime number" << std::endl;
                 return {};
         }
 
-        std::vector<int> primitive_roots;
+        std::vector<long int> primitive_roots;
 
-        for (int g = 2; g < p; ++g) {
+        for (long int g = 2; g < p; ++g) {
                 if (is_primitive_root(g, p)) {
                         primitive_roots.push_back(g);
                 }
@@ -112,16 +112,16 @@ std::vector<int> find_primitive_roots(int p) {
 }
 
 // Verify primitve root
-bool verify_primitive_root(int g, int p) {
-        std::vector<int> residues;
+bool verify_primitive_root(long int g, long int p) {
+        std::vector<long int> residues;
 
-        for (int k = 1; k < p; ++k) {
+        for (long int k = 1; k < p; ++k) {
                 residues.push_back(power_mod(g, k, p));
         }
 
         std::sort(residues.begin(), residues.end());
 
-        for (int i = 0; i < p - 1; ++i) {
+        for (long int i = 0; i < p - 1; ++i) {
                 if (residues[i] != i + 1) {
                         return false;
                 }
