@@ -1,6 +1,8 @@
 import socket
 import sys
 from time import sleep
+from random import choice, randint
+from prim_roots import primitive_roots as pr
 
 def main():
     if sys.argv[1] == "h":
@@ -16,16 +18,16 @@ primes = [
 ]
 
 def generate_public():
-    prime = 23
-    prim_root = 5
-    a = 4
+    prime = primes[0]
+    prim_root = choice(pr.find_primitive_roots(prime))
+    a = randint(3, 13)
 
     big_a = pow(prim_root, a)
 
     return (a, big_a, prime, prim_root)
 
 def client_secret(big_a, prime, prim_root):
-    b = 8
+    b = randint(13, 23)
     big_b = pow(prim_root, b)
 
     shared_secret = pow(big_a, b) % prime

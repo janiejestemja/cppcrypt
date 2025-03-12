@@ -93,8 +93,28 @@ bool is_primitive_root(long int g, long int p) {
         return true;
 }
 
-// Find all primitive roots modulo p
+// Find some primitive roots modulo p
 std::vector<long int> find_primitive_roots(long int p) {
+        if (!is_prime(p)) {
+                std::cerr << p << " is not a prime number" << std::endl;
+                return {};
+        }
+
+        std::vector<long int> primitive_roots;
+
+        for (long int g = 2; g < p; ++g) {
+                if (is_primitive_root(g, p)) {
+                        primitive_roots.push_back(g);
+                }
+                if (primitive_roots.size() == 10) {
+                        return primitive_roots;
+                }
+        }
+
+        return primitive_roots;
+}
+// Find all primitive roots modulo p
+std::vector<long int> find_all_primitive_roots(long int p) {
         if (!is_prime(p)) {
                 std::cerr << p << " is not a prime number" << std::endl;
                 return {};
