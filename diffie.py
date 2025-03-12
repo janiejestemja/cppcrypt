@@ -8,6 +8,13 @@ def main():
     elif sys.argv[1] == "c":
         client()
 
+primes = [
+        2015121110987654321,
+        5555555555555555533,
+        7393913311133193937,
+        8888888897888888899,
+]
+
 def generate_public():
     prime = 23
     prim_root = 5
