@@ -2,6 +2,7 @@ import socket
 import sys
 from time import sleep
 from random import choice, randint
+
 from prim_roots import primitive_roots as pr
 
 def main():
@@ -16,6 +17,8 @@ primes = [
         7393913311133193937,
         8888888897888888899,
 ]
+
+text = "This is some example text to check out if anything works"
 
 def generate_public():
     prime = primes[0]
@@ -64,6 +67,7 @@ def server():
         big_b = int(client_socket.recv(1024).decode())
         shared_secret = server_secret(a, big_b, prime)
         print(shared_secret)
+        
         client_socket.close()
         server_socket.close()
         break
