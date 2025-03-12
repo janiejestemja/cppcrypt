@@ -4,6 +4,7 @@ from time import sleep
 from random import choice, randint
 
 from prim_roots import primitive_roots as pr
+from aes.pyaes import key_expansion, aes_encrypt, aes_decrypt
 
 def main():
     if sys.argv[1] == "h":
@@ -11,14 +12,19 @@ def main():
     elif sys.argv[1] == "c":
         client()
 
+state = [
+        [0x00, 0x01, 0x02, 0x03],
+        [0x10, 0x11, 0x12, 0x13],
+        [0x20, 0x21, 0x22, 0x23],
+        [0x30, 0x31, 0x32, 0x33]
+]
+
 primes = [
         2015121110987654321,
         5555555555555555533,
         7393913311133193937,
         8888888897888888899,
 ]
-
-text = "This is some example text to check out if anything works"
 
 def generate_public():
     prime = primes[0]
@@ -67,7 +73,21 @@ def server():
         big_b = int(client_socket.recv(1024).decode())
         shared_secret = server_secret(a, big_b, prime)
         print(shared_secret)
-        
+
+        round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
+        cipherstate = aes_encrypt(state, round_keys)
+        print(cipherstate)
+
+        for row in cipherstate:
+            for ele in row:
+                client_socket.send(bytes(str(ele).encode()))
+                sleep(0.1)
+
+        client_socket.send(bytes(str("exit()").encode()))
+        sleep(0.1)
+
+        print(round_keys)
+
         client_socket.close()
         server_socket.close()
         break
@@ -91,6 +111,26 @@ def client():
     client_socket.send(bytes(str(big_b).encode()))
     print(shared_secret)
 
+    ciphers = []
+    while True:
+        message = client_socket.recv(1024)
+        if message.decode() == "exit()":
+            break
+        else:
+            ciphers.append(int(message.decode()))
+
+    cipherstate = []
+    for i in range(4):
+        row = []
+        for j in range(4):
+            row.append(ciphers[4 * i + j])
+        cipherstate.append(row)
+
+    for row in cipherstate:
+        print(row)
+
+    round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
+    print(round_keys)
     client_socket.close()
 
 if __name__ == "__main__":
