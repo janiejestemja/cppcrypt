@@ -138,7 +138,7 @@ uint32_t rotWord(uint32_t word) {
 
 // Apply s-box
 uint32_t subWord(uint32_t word) {
-        return (aes_sbox(word >> 24) & 0xFF << 24) | 
+        return (aes_sbox((word >> 24) & 0xFF) << 24) | 
                 (aes_sbox((word >> 16) & 0xFF) << 16) |
                 (aes_sbox((word >> 8) & 0xFF) << 8) | 
                 (aes_sbox(word & 0xFF));
@@ -147,9 +147,9 @@ uint32_t subWord(uint32_t word) {
 // Key expansion
 void keyExpansion(const std::array<uint8_t, 16>& key, std::array<uint32_t, 44>& roundKeys) {
         for (int i = 0; i < 4; i++) {
-                roundKeys[i] = (key[4 * 1] << 24) | (key[4 * i + 1] << 16) | (key[4 * i +2] << 8) | key[4 * i +3];
+                roundKeys[i] = (key[4 * i] << 24) | (key[4 * i + 1] << 16) | (key[4 * i +2] << 8) | key[4 * i + 3];
         }
-        for (int i = 4; i < 4; i++) {
+        for (int i = 4; i < 44; i++) {
                 uint32_t temp = roundKeys[i - 1];
 
                 if (i % 4 == 0) {
