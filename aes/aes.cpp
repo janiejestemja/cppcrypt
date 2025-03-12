@@ -138,7 +138,7 @@ uint32_t rotWord(uint32_t word) {
 
 // Apply s-box
 uint32_t subWord(uint32_t word) {
-        return (aes_sbox(word >> 24) << 24) | 
+        return (aes_sbox(word >> 24) & 0xFF << 24) | 
                 (aes_sbox((word >> 16) & 0xFF) << 16) |
                 (aes_sbox((word >> 8) & 0xFF) << 8) | 
                 (aes_sbox(word & 0xFF));
