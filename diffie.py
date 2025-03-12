@@ -76,7 +76,6 @@ def server():
 
         round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
         cipherstate = aes_encrypt(state, round_keys)
-        print(cipherstate)
 
         for row in cipherstate:
             for ele in row:
@@ -87,6 +86,9 @@ def server():
         sleep(0.1)
 
         print(round_keys)
+
+        for row in state:
+            print(row)
 
         client_socket.close()
         server_socket.close()
@@ -126,11 +128,13 @@ def client():
             row.append(ciphers[4 * i + j])
         cipherstate.append(row)
 
-    for row in cipherstate:
-        print(row)
-
     round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
     print(round_keys)
+
+    deciphered_state = aes_decrypt(cipherstate, round_keys)
+    for row in deciphered_state:
+        print(row)
+
     client_socket.close()
 
 if __name__ == "__main__":
