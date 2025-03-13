@@ -7,12 +7,7 @@ from prim_roots import primitive_roots as pr
 from aes.pyaes import key_expansion, aes_encrypt, aes_decrypt
 from utils import states_to_text, str_to_states, read_text
 
-def main():
-    if sys.argv[1] == "h":
-        server()
-    elif sys.argv[1] == "c":
-        client()
-
+text = read_text()
 
 primes = [
         2015121110987654321,
@@ -21,39 +16,40 @@ primes = [
         8888888897888888899,
 ]
 
-text = read_text()
-
+def main():
+    if sys.argv[1] == "h":
+        server()
+    elif sys.argv[1] == "c":
+        client()
+# Generate public variables on the server
 def generate_public():
     prime = primes[0]
     prim_root = choice(pr.find_primitive_roots(prime))
-    a = randint(3, 13)
+    a = randint(3, 23)
 
     big_a = pow(prim_root, a)
 
     return (a, big_a, prime, prim_root)
 
+# Calculate shared secret on client
 def client_secret(big_a, prime, prim_root):
-    b = randint(13, 23)
+    b = randint(3, 23)
     big_b = pow(prim_root, b)
 
     shared_secret = pow(big_a, b) % prime
 
     return (b, big_b, shared_secret)
 
+# Calculate shared secret on server
 def server_secret(a, big_b, prime):
     shared_secret = pow(big_b, a) % prime
 
     return shared_secret
 
 def server():
-    state = [
-            [0x00, 0x01, 0x02, 0x03],
-            [0x10, 0x11, 0x12, 0x13],
-            [0x20, 0x21, 0x22, 0x23],
-            [0x30, 0x31, 0x32, 0x33]
-    ]
     a, big_a, prime, prim_root = generate_public()
     print(big_a, prime, prim_root, sep= " : ")
+
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("127.0.0.1", 12345))
     server_socket.listen()
@@ -65,11 +61,11 @@ def server():
 
         # Send public variables to client
         client_socket.send(bytes(str(big_a).encode()))
-        sleep(0.1)
+        sleep(0.01)
         client_socket.send(bytes(str(prime).encode()))
-        sleep(0.1)
+        sleep(0.01)
         client_socket.send(bytes(str(prim_root).encode()))
-        sleep(0.1)
+        sleep(0.01)
         client_socket.send(bytes(str("exit()").encode()))
         print("Public variables send")
 
@@ -81,23 +77,17 @@ def server():
 
         # Expand Key
         round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
-        # Encrypt one state
-        cipherstate = aes_encrypt(state, round_keys)
-        # Send states elements
-        for row in cipherstate:
-            for ele in row:
-                client_socket.send(bytes(str(ele).encode()))
-                sleep(0.1)
-        client_socket.send(bytes(str("exit()").encode()))
-        sleep(0.1)
 
+        # Encrypt and send text
         states = str_to_states(text)
         cipherstates = [aes_encrypt(state, round_keys) for state in states]
+
         for cipherstate in cipherstates:
             for row in cipherstate:
                 for ele in row:
                     client_socket.send(bytes(str(ele).encode()))
-                    sleep(0.1)
+                    sleep(0.01)
+
         client_socket.send(bytes(str("exit()").encode()))
 
         client_socket.close()
@@ -118,7 +108,6 @@ def client():
             public_variables.append(int(message.decode()))
         print(f"Recieved: {message.decode()}")
 
-
     # Calculate private var, public var and shared secret
     b, big_b, shared_secret = client_secret(*public_variables)
     print(shared_secret)
@@ -127,27 +116,7 @@ def client():
     # Send public var
     client_socket.send(bytes(str(big_b).encode()))
 
-    # Recieve one ciphered state
-    ciphers = []
-    while True:
-        message = client_socket.recv(1024)
-        if message.decode() == "exit()":
-            break
-        else:
-            ciphers.append(int(message.decode()))
-
-    # Reformat recieved ciphered state
-    cipherstate = []
-    for i in range(4):
-        row = []
-        for j in range(4):
-            row.append(ciphers[4 * i + j])
-        cipherstate.append(row)
-
-    # Decipher state
-    deciphered_state = aes_decrypt(cipherstate, round_keys)
-
-    # Decipher text
+    # Recieve and decipher text
     i = 0
     j = 0
     row = []
