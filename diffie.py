@@ -10,10 +10,29 @@ from utils import states_to_text, str_to_states, read_text
 text = read_text()
 
 primes = [
-        2015121110987654321,
-        5555555555555555533,
-        7393913311133193937,
-        8888888897888888899,
+        11111111111111111011,
+        11111313171722335577,
+        11138479445180240497,
+        11281963036964038421,
+        11976506590973322187,
+        12345678901234567891,
+        12345678910987654321,
+        12797382490434158663,
+        12904149405941903143,
+        13080048459073205527,
+        13169525310647365859,
+        13315146811210211749,
+        13337777797999979999,
+        13337779797779999999,
+        13464654573299691533,
+        14400146411488415129,
+        15021025033035039049,
+        15396334245663786197,
+        16808980088116168811,
+        17131175322357111317,
+        17625750738756291797,
+        18446744065119617029,
+        18446744069414584321,
 ]
 
 def main():
@@ -23,18 +42,18 @@ def main():
         client()
 # Generate public variables on the server
 def generate_public():
-    prime = primes[0]
-    prim_root = choice(pr.find_primitive_roots(prime))
-    a = randint(3, 23)
+    prime = choice(primes)
+    prim_root = pr.find_primitive_roots(prime)[-1]
+    a = randint(3, 99)
 
-    big_a = pow(prim_root, a)
+    big_a = pow(prim_root, a) % prime
 
     return (a, big_a, prime, prim_root)
 
 # Calculate shared secret on client
 def client_secret(big_a, prime, prim_root):
-    b = randint(3, 23)
-    big_b = pow(prim_root, b)
+    b = randint(3, 99)
+    big_b = pow(prim_root, b) % prime
 
     shared_secret = pow(big_a, b) % prime
 
@@ -48,7 +67,9 @@ def server_secret(a, big_b, prime):
 
 def server():
     a, big_a, prime, prim_root = generate_public()
-    print(big_a, prime, prim_root, sep= " : ")
+    print(big_a)
+    print(prime)
+    print(prim_root)
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("127.0.0.1", 12345))
