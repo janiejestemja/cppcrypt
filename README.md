@@ -6,11 +6,11 @@
 
 ---
 
-This is a learning project about the Diffie-Hellman key-exchange (DH) as well as the advanced ecryption standard (AES) thus this software is meant for learning and experimentation, not real world application. 
+This is a learning project about the Diffie-Hellman key-exchange (DH) as well as the advanced ecryption standard (AES) thus this software is meant for learning and experimentation, not real-world application. 
 
 **Features**
 - Encrypt and save files in an encrypted state, as well as vice versa
-- Send encrypted textfiles via TCP using DH followed up by AES
+- Send encrypted text files via TCP using DH for key exchange followed up by AES for encryption
 
 ## Directory Structure
 
@@ -82,12 +82,11 @@ To save the contents of a previously encrypted file as plaintext run
 python main.py -de crypted_lore.txt lore_key.txt decrypted_lore.txt
 ```
 
-## Usage of diffy.py
+## Usage of diffie.py
 
 ---
 
-**Attention**:
-While this feature is fully functioning it is underdevelopted. For Diffie-Hellman key-exchanges to be considered secure the underlying prime numbers *should* be longer (2048+ bits) than the ones implemented in this project (~64 bits). 
+**⚠ Warning**: The current implementation uses 64-bit prime numbers, which are insecure for real-world use. For secure communications, use at least 2048-bit primes.
 
 ### Run as host:
 
