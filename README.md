@@ -6,11 +6,11 @@
 
 ---
 
-This is a learning project about the Diffie-Hellman key-exchange (DH) as well as the advanced ecryption standard (AES) thus this software is meant for learning and experimentation, not real-world application. 
+This is a learning project about the Diffie-Hellman key-exchange (DH) as well as the Advanced Ecryption Standard (AES).
 
 **Features**
 - Encrypt and save files in an encrypted state, as well as vice versa
-- Send encrypted text files via TCP using DH for key exchange followed up by AES for encryption
+- Send text files via TCP using DH for key exchange followed up by AES for encryption
 
 ## Directory Structure
 
@@ -34,7 +34,6 @@ cppcrypt
 ├── requirements.txt
 └── utils.py
 ```
-
 
 ## Installation
 
@@ -86,7 +85,7 @@ python main.py -de crypted_lore.txt lore_key.txt decrypted_lore.txt
 
 ---
 
-**⚠ Warning**: The current implementation uses 64-bit prime numbers, which are insecure for real-world use. For secure communications, use at least 2048-bit primes.
+**⚠ Warning**: The current implementation uses 64-bit prime numbers, which are insecure for real-world use.
 
 ### Run as host:
 
@@ -99,9 +98,3 @@ python diffie.py h
 ```bash
 python diffie.py c
 ```
-
-## Developer Comment
-
----
-
-*Section yet to be written...*
