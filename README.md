@@ -1,13 +1,53 @@
+# Python module for Cryptography 
+#### written in C++
+---
+
+## Description
+
+---
+
+This is a learning project about the Diffie-Hellman key-exchange and advanced ecryption standard (AES). 
+
+## Directory Structure
+
+---
+
+```plaintext
+├── aes
+│   ├── aes.cpp
+│   ├── aes.h
+│   ├── __init__.py
+│   ├── module.cpp
+│   └── setup.py
+├── diffie.py
+├── main.py
+├── prim_roots
+│   ├── __init__.py
+│   ├── prim_roots.cpp
+│   └── setup.py
+├── README.md
+├── requirements.txt
+└── utils.py
+```
+
+
 ## Installation
 
 --- 
 
+To install the necessary third party dependencies run
+
+```bash
+pip install -r requirements.txt
+```
+
+To install the C++ components change directory into `aes` and `prim_roots` respectively and run
 
 ```bash
 python setup.py build_ext --inplace
 ```
 
-## Usage
+## Usage of AES
 
 ---
 
