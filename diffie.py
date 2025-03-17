@@ -40,6 +40,7 @@ def main():
         server()
     elif sys.argv[1] == "c":
         client()
+
 # Generate public variables on the server
 def generate_public():
     prime = choice(primes)
@@ -131,6 +132,7 @@ def client():
 
     # Calculate private var, public var and shared secret
     b, big_b, shared_secret = client_secret(*public_variables)
+    print(big_b)
     print(shared_secret)
     round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
 
