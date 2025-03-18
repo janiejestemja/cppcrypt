@@ -1,7 +1,7 @@
 import sys
 from random import choice, randint
 
-from utils import client, server, read_text
+from cryptology.utils import client, server, read_text
 
 def main():
     if sys.argv[1] == "h":

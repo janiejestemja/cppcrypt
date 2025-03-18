@@ -1,8 +1,8 @@
 import socket
 from random import choice, randint
 from time import sleep
-from aes.pyaes import key_expansion, aes_encrypt, aes_decrypt
-from prim_roots import primitive_roots as pr
+from .aes.pyaes import key_expansion, aes_decrypt, aes_encrypt
+from .prim_roots import primitive_roots as pr
 
 primes = [
         11111111111111111011,
