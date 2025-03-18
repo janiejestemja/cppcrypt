@@ -1,9 +1,10 @@
 import sys
+from getpass import getpass
 
 from cryptology.utils import load_files, save_files
 
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 4:
         sys.exit("Missing cla")
 
 
@@ -11,23 +12,28 @@ def main():
     if sys.argv[1] == "-en":
         file_name = sys.argv[2]
         crypt_name = sys.argv[3]
-        key_name = sys.argv[4]
-        save_files(file_name=file_name, crypt_name=crypt_name, key_name=key_name)
+        passkey = getpass()
+        if passkey == "":
+            passkey = "0:1:2:3:4:5:6:7:8:9:a:b:c:d:e:f"
+
+        save_files(file_name=file_name, crypt_name=crypt_name, passkey=passkey)
 
     # Decryption
     elif sys.argv[1] == "-de":
         crypt_name = sys.argv[2]
-        key_name = sys.argv[3]
-        file_name = sys.argv[4]
+        file_name = sys.argv[3]
+        passkey = getpass()
+        if passkey == "":
+            passkey = "0:1:2:3:4:5:6:7:8:9:a:b:c:d:e:f"
 
         # Priting 
         if file_name == "-p":
-            print(load_files(crypt_name=crypt_name, key_name=key_name))
+            print(load_files(crypt_name=crypt_name, passkey=passkey))
 
         # Saving to file
         else:
             with open(file_name, "w") as f:
-                f.write(load_files(crypt_name=crypt_name, key_name=key_name))
+                f.write(load_files(crypt_name=crypt_name, passkey=passkey))
 
 if __name__ == "__main__":
     main()

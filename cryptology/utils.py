@@ -1,8 +1,9 @@
 import os
 import socket
-from typing import List, Tuple
 from random import choice, randint
 from time import sleep
+from typing import List, Tuple
+from getpass import getpass
 
 from .aes.pyaes import key_expansion, aes_decrypt, aes_encrypt
 from .prim_roots import primitive_roots as pr
@@ -121,25 +122,20 @@ def save_crypt(filename : str, cipherstates : List[State]):
         for state_str in state_strs:
             f.write(state_str + "\n")
 
-def load_files(crypt_name : str, key_name : str) -> str:
-    loaded_key = []
-    with open(key_name) as f:
-        reader = f.readlines()
-        loaded_key = [int(key.strip("\n")) for key in reader]
+def load_files(crypt_name : str, passkey : str) -> str:
+    key = bytes([int(ele, 16) for ele in passkey.split(":")])
+    round_keys = key_expansion(key)
 
-    loaded_keys = key_expansion(loaded_key)
     # Load encrypted file
     text_fromf = read_crypt(crypt_name)
 
     # Decryption
-    decipheredstates = [aes_decrypt(state, loaded_keys) for state in text_fromf]
+    decipheredstates = [aes_decrypt(state, round_keys) for state in text_fromf]
 
     return states_to_text(decipheredstates)
 
-def save_files(file_name : str, crypt_name : str, key_name : str):
-    key = bytes( 
-        [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f]
-    )
+def save_files(file_name : str, crypt_name : str, passkey : str):
+    key = bytes([int(ele, 16) for ele in passkey.split(":")])
     round_keys = key_expansion(key)   
 
     # Encryption
@@ -150,11 +146,6 @@ def save_files(file_name : str, crypt_name : str, key_name : str):
 
     # Save encrypted file
     save_crypt(crypt_name, cipherstates)
-
-    with open(key_name, "w") as f:
-        for ele in key:
-            f.write(str(ele) + "\n")
-
 
 # Generate public variables on the server
 def generate_public() -> Tuple[int, int, int, int]:
