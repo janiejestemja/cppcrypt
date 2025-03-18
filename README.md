@@ -53,7 +53,7 @@ Given a textfile called `lore.txt` containing plaintext
 ### Encryption
 
 ```bash
-python main.py -en lore.txt crypted_lore.txt lore_key.txt
+python main.py -en lore.txt crypted_lore.txt 
 ```
 
 ### Decryption
@@ -63,7 +63,7 @@ python main.py -en lore.txt crypted_lore.txt lore_key.txt
 To just print the contents of a previously encrypted file into the terminal run
 
 ```bash
-python aesify.py -de crypted_lore.txt lore_key.txt -p
+python aesify.py -de crypted_lore.txt -p
 ```
 
 #### Save to txt
@@ -71,7 +71,7 @@ python aesify.py -de crypted_lore.txt lore_key.txt -p
 To save the contents of a previously encrypted file as plaintext run
 
 ```bash
-python aesify.py -de crypted_lore.txt lore_key.txt decrypted_lore.txt
+python aesify.py -de crypted_lore.txt decrypted_lore.txt
 ```
 
 ## Usage of diffie.py
