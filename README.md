@@ -1,8 +1,16 @@
-# Python module for Cryptography written in C++
+# CppCrypt
 
 ---
 
-## Directory Structure
+## Description
+
+This is a learning project about the Diffie-Hellman (DH) key-exchange and Advanced Encryption Standard (AES).
+
+Goal of the project is to implement following **Features**
+- Encrypt and save text files in an encrypted state, as well as vice versa
+- Send text files via TCP using DH for key exchange followed up by AES for encryption
+
+### Directory Structure
 
 ---
 
@@ -27,6 +35,18 @@
 ├── README.md
 └── requirements.txt
 ```
+
+### Content description
+
+---
+
+The subdirectory `prim_roots` contains a module named `primitive_roots` for verification of prime numbers and calculation of their primitive roots and is used for DH.
+
+The subdirectory `aes` contains a module named `pyaes` which contains function definitions for key-expansion from key to round keys, as well as encryption and decryption of sixteen bytes, formatted as 4x4 matrix.
+
+The `aesify.py` script encrypts and decrypts textfiles.
+
+The `diffify.py` script exchanges keys per DH and sends a via AES encrypted file from host to client afterwards.
 
 ## Installation
 
