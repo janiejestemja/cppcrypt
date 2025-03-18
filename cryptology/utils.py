@@ -122,8 +122,23 @@ def save_crypt(filename : str, cipherstates : List[State]):
         for state_str in state_strs:
             f.write(state_str + "\n")
 
+def check_passkey(passkey : str) -> bool:
+    try:
+        passkey_ints = [int(key, 16) for key in passkey.split(",")]
+
+    except (TypeError, ValueError):
+        return False
+
+    if len([x for x in passkey_ints if x < 0 or x > 255]) > 0:
+        return False
+
+    elif len(passkey_ints) != 16:
+        return False
+
+    return True
+
 def load_files(crypt_name : str, passkey : str) -> str:
-    key = bytes([int(ele, 16) for ele in passkey.split(":")])
+    key = bytes([int(ele, 16) for ele in passkey.split(",")])
     round_keys = key_expansion(key)
 
     # Load encrypted file
@@ -135,7 +150,7 @@ def load_files(crypt_name : str, passkey : str) -> str:
     return states_to_text(decipheredstates)
 
 def save_files(file_name : str, crypt_name : str, passkey : str):
-    key = bytes([int(ele, 16) for ele in passkey.split(":")])
+    key = bytes([int(ele, 16) for ele in passkey.split(",")])
     round_keys = key_expansion(key)   
 
     # Encryption
