@@ -64,7 +64,7 @@ To install the C++ components change directory into `aes` and `prim_roots` respe
 python setup.py build_ext --inplace
 ```
 
-## Usage of AES
+## Usage of aesify.py
 
 ---
 
@@ -94,7 +94,7 @@ To save the contents of a previously encrypted file as plaintext run
 python aesify.py -de crypted_lore.txt decrypted_lore.txt
 ```
 
-## Usage of diffie.py
+## Usage of diffify.py
 
 ---
 
