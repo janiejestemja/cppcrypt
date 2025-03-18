@@ -1,8 +1,13 @@
+import os
 import socket
+from typing import List, Tuple
 from random import choice, randint
 from time import sleep
+
 from .aes.pyaes import key_expansion, aes_decrypt, aes_encrypt
 from .prim_roots import primitive_roots as pr
+
+State = List[List[int]]
 
 primes = [
         11111111111111111011,
@@ -30,37 +35,37 @@ primes = [
         18446744069414584321,
 ]
 
-def str_to_states(text : str) -> list:
+def str_to_states(text : str) -> List[State]:
     const = 16
-    hex_text = []
+    text_nums = []
 
     for char in text:
         if ord(char) < 0 or ord(char) > 254:
-            hex_text.append(hex(ord("?")))
+            text_nums.append(ord("?"))
         else:
-            hex_text.append(hex(ord(char)))
+            text_nums.append(ord(char))
             
     for _ in range(const - (len(text) % const)):
-        hex_text.append(hex(ord(" ")))
+        text_nums.append(ord(" "))
         
     states = []
 
-    hex_len = len(hex_text)
+    text_nums_len = len(text_nums)
     
-    for i in range(0, hex_len, 16):
+    for i in range(0, text_nums_len, 16):
         state = []
         
         for j in range(4):
             row = []
             
             for k in range(4):
-                row.append(int(hex_text[i + 4 * j + k], 16))
+                row.append(int(text_nums[i + 4 * j + k]))
             state.append(row)
         states.append(state)
 
     return states
 
-def states_to_text(states : list) -> str:
+def states_to_text(states : List[State]) -> str:
     txt_from_hex = ""
     
     for i, state in enumerate(states):
@@ -70,19 +75,22 @@ def states_to_text(states : list) -> str:
 
     return txt_from_hex
 
+def get_filepath(filename : str) -> str:
+    filepath = os.path.abspath(filename)
+    return filepath
 
-def read_text(filename="lore.txt"):
+def read_text(filename="lore.txt") -> str:
     text = ""
-    with open(filename) as f:
+    with open(get_filepath(filename)) as f:
         reader = f.read()
         text = reader
 
     return text
 
-def read_crypt(filename):
+def read_crypt(filename : str) -> List[State]:
     # Reading from file
     from_file = []
-    with open(filename) as f:
+    with open(get_filepath(filename)) as f:
         reader = f.readlines()
         for line in reader:
             from_file.append(line.strip("\n"))
@@ -99,7 +107,7 @@ def read_crypt(filename):
 
     return text_fromf
 
-def save_crypt(filename, cipherstates):
+def save_crypt(filename : str, cipherstates : List[State]):
     state_strs = []
     for state in cipherstates:
         row_strs = []
@@ -109,7 +117,7 @@ def save_crypt(filename, cipherstates):
         state_str = ";".join(row for row in row_strs)
         state_strs.append(state_str)
 
-    with open(filename, "w") as f:
+    with open(get_filepath(filename), "w") as f:
         for state_str in state_strs:
             f.write(state_str + "\n")
 
@@ -149,7 +157,7 @@ def save_files(file_name : str, crypt_name : str, key_name : str):
 
 
 # Generate public variables on the server
-def generate_public():
+def generate_public() -> Tuple[int, int, int, int]:
     prime = choice(primes)
     prim_root = pr.find_primitive_roots(prime)[-1]
     a = randint(3, 99)
@@ -159,7 +167,7 @@ def generate_public():
     return (a, big_a, prime, prim_root)
 
 # Calculate shared secret on client
-def client_secret(big_a, prime, prim_root):
+def client_secret(big_a : int, prime : int, prim_root : int) -> Tuple[int, int, int]:
     b = randint(3, 99)
     big_b = pow(prim_root, b) % prime
 
@@ -168,12 +176,12 @@ def client_secret(big_a, prime, prim_root):
     return (b, big_b, shared_secret)
 
 # Calculate shared secret on server
-def server_secret(a, big_b, prime):
+def server_secret(a : int, big_b : int, prime : int) -> int:
     shared_secret = pow(big_b, a) % prime
 
     return shared_secret
 
-def server(text):
+def server(text : str):
     a, big_a, prime, prim_root = generate_public()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
