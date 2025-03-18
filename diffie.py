@@ -7,7 +7,6 @@ from prim_roots import primitive_roots as pr
 from aes.pyaes import key_expansion, aes_encrypt, aes_decrypt
 from utils import states_to_text, str_to_states, read_text
 
-text = read_text()
 
 primes = [
         11111111111111111011,
@@ -37,7 +36,12 @@ primes = [
 
 def main():
     if sys.argv[1] == "h":
-        server()
+        infile = input("File to send: ")
+        if infile != "":
+            text = read_text(infile)
+        else:
+            text = read_text()
+        server(text)
     elif sys.argv[1] == "c":
         client()
 
@@ -66,11 +70,8 @@ def server_secret(a, big_b, prime):
 
     return shared_secret
 
-def server():
+def server(text):
     a, big_a, prime, prim_root = generate_public()
-    print(big_a)
-    print(prime)
-    print(prim_root)
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(("127.0.0.1", 12345))
@@ -95,7 +96,6 @@ def server():
         big_b = int(client_socket.recv(1024).decode())
         # Calculate shared secret
         shared_secret = server_secret(a, big_b, prime)
-        print(shared_secret)
 
         # Expand Key
         round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
@@ -128,12 +128,9 @@ def client():
             break
         else:
             public_variables.append(int(message.decode()))
-        print(f"Recieved: {message.decode()}")
 
     # Calculate private var, public var and shared secret
     b, big_b, shared_secret = client_secret(*public_variables)
-    print(big_b)
-    print(shared_secret)
     round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
 
     # Send public var
