@@ -53,7 +53,7 @@ Given a textfile called `lore.txt` containing plaintext
 ### Encryption
 
 ```bash
-python main.py -en lore.txt crypted_lore.txt 
+python aesify.py -en lore.txt crypted_lore.txt 
 ```
 
 ### Decryption
