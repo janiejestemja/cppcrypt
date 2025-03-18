@@ -7,7 +7,7 @@
 ---
 
 ```plaintext
-cppcrypt
+├── aesify.py
 ├── cryptology
 │   ├── aes
 │   │   ├── aes.cpp
@@ -15,14 +15,15 @@ cppcrypt
 │   │   ├── __init__.py
 │   │   ├── module.cpp
 │   │   └── setup.py
-│   ├── aesify.py
-│   ├── diffify.py
+│   ├── __init__.py
 │   ├── prim_roots
 │   │   ├── __init__.py
 │   │   ├── prim_roots.cpp
 │   │   └── setup.py
 │   └── utils.py
+├── diffify.py
 ├── LICENSE.txt
+├── main.py
 ├── README.md
 └── requirements.txt
 ```
