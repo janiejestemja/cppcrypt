@@ -8,11 +8,27 @@
 
 This is a learning project about the Diffie-Hellman key-exchange (DH) as well as the Advanced Ecryption Standard (AES).
 
-**Features**
-- Encrypt and save files in an encrypted state, as well as vice versa
+Goal of the project is to implement following **Features**
+- Encrypt and save text files in an encrypted state, as well as vice versa
 - Send text files via TCP using DH for key exchange followed up by AES for encryption
 
-## Directory Structure
+### Contents of the repository
+
+---
+
+The subdirectory `prim_roots` contains a module named `primitive_roots` for verification of prime numbers and calculation of their primitive roots and is used for DH.
+
+The subdirectory `aes` contains a module named `pyaes` which contains function definitions for key-expansion from key to round keys, as well as encryption and decryption of sixteen bytes, formatted as 4x4 matrix.
+
+For the modules to work they have to be compiled (see instructions down below).
+
+The `main.py` file is a script for encryption and decryption of files. 
+
+The `diffie.py` file exchanges keys per DH, and sends an encrypted file from host to client afterwards.
+
+The `utils.py` file contains utility functions.
+
+#### Directory Structure
 
 ---
 
@@ -98,3 +114,9 @@ python diffie.py h
 ```bash
 python diffie.py c
 ```
+
+## License 
+
+---
+
+This project is licensed under the MIT license.
