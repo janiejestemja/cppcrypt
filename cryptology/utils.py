@@ -74,13 +74,13 @@ def states_to_text(states : List[State]) -> str:
             for k, element in enumerate(row):
                 txt_from_hex = txt_from_hex + chr(int(states[i][j][k]))
 
-    return txt_from_hex
+    return txt_from_hex.strip()
 
 def get_filepath(filename : str) -> str:
     filepath = os.path.abspath(filename)
     return filepath
 
-def read_text(filename="lore.txt") -> str:
+def read_text(filename="LICENSE.txt") -> str:
     text = ""
     with open(get_filepath(filename)) as f:
         reader = f.read()
@@ -172,11 +172,11 @@ def server_secret(a : int, big_b : int, prime : int) -> int:
 
     return shared_secret
 
-def server(text : str):
+def server(ipvfour, portnumber, text : str):
     a, big_a, prime, prim_root = generate_public()
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(("127.0.0.1", 12345))
+    server_socket.bind((ipvfour, portnumber))
     server_socket.listen()
     print("Server is listening...")
 
@@ -206,6 +206,7 @@ def server(text : str):
         states = str_to_states(text)
         cipherstates = [aes_encrypt(state, round_keys) for state in states]
 
+        print("Sending ciphertext...")
         for cipherstate in cipherstates:
             for row in cipherstate:
                 for ele in row:
@@ -214,13 +215,14 @@ def server(text : str):
 
         client_socket.send(bytes(str("exit()").encode()))
 
+        print("Closing connection")
         client_socket.close()
         server_socket.close()
         break
 
-def client():
+def client(ipvfour : str, portnumber: int):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(("127.0.0.1", 12345))
+    client_socket.connect((ipvfour, portnumber))
 
     # Recieve public variables from server
     public_variables = []
@@ -237,6 +239,8 @@ def client():
 
     # Send public var
     client_socket.send(bytes(str(big_b).encode()))
+    print("Public variables send")
+    print("Recieving cipher...")
 
     # Recieve and decipher text
     i = 0
@@ -263,6 +267,7 @@ def client():
                 cipherstate = []
                 i = 0
 
+    print("Ciphertext recieved...")
     states = [aes_decrypt(cipherstate, round_keys) for cipherstate in cipherstates]
     print(states_to_text(states))
 
