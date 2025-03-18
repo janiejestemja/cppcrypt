@@ -16,14 +16,16 @@ def save_files(file_name : str, crypt_name : str, key_name : str):
     save_crypt(crypt_name, cipherstates)
 
     with open(key_name, "w") as f:
-        for ele in round_keys:
+        for ele in key:
             f.write(str(ele) + "\n")
 
 def load_files(crypt_name : str, key_name : str) -> str:
-    loaded_keys = []
+    loaded_key = []
     with open(key_name) as f:
         reader = f.readlines()
-        loaded_keys = [int(key.strip("\n")) for key in reader]
+        loaded_key = [int(key.strip("\n")) for key in reader]
+
+    loaded_keys = key_expansion(loaded_key)
     # Load encrypted file
     text_fromf = read_crypt(crypt_name)
 
