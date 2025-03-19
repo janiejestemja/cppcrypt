@@ -58,10 +58,22 @@ To install the necessary packages from the Python package index run
 pip install -r requirements.txt
 ```
 
+To install dependencies for building the C++ extensions (on Fedora) run
+
+```bash 
+sudo dnf install python3-devel, gmp-devel
+```
+
 To install the C++ components change directory into `aes` and `prim_roots` respectively and run
 
 ```bash
 python setup.py build_ext --inplace
+```
+
+To install the bigInteger extension change directory into `big_int` and run
+
+```bash
+python setup.py install
 ```
 
 ## Usage of aesify.py
