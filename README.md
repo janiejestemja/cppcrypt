@@ -61,8 +61,16 @@ Given a textfile called `lore.txt` containing plaintext
 
 ### Encryption
 
+After running 
+
 ```bash
 python aesify.py -en lore.txt crypted_lore.txt 
+```
+
+you will be prompted to enter a passkey, which is expected to be expected to be 16 hexadecimal numbers in the range between 0 and FF separated by commas, like for example 
+
+```plaintext
+0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f
 ```
 
 ### Decryption
