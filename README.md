@@ -134,6 +134,22 @@ python diffify.py h
 python diffify.py c
 ```
 
+## Usage of ecdiffify.py
+
+---
+
+### Run as host:
+
+```bash
+python ecdiffify.py h
+```
+
+### Run as client:
+
+```bash
+python ecdiffify.py c
+```
+
 ## License 
 
 ---
