@@ -51,6 +51,11 @@ The `diffify.py` script exchanges keys per DH and sends a via AES encrypted file
 ## Installation
 
 --- 
+To install dependencies for building the C++ extensions (on Fedora) run
+
+```bash 
+sudo dnf install python3-devel, gmp-devel
+```
 
 To install the necessary packages from the Python package index run
 
@@ -58,22 +63,20 @@ To install the necessary packages from the Python package index run
 pip install -r requirements.txt
 ```
 
-To install dependencies for building the C++ extensions (on Fedora) run
-
-```bash 
-sudo dnf install python3-devel, gmp-devel
-```
-
-To install the C++ components change directory into `aes` and `prim_roots` respectively and run
+To build the C++ extensions run
 
 ```bash
-python setup.py build_ext --inplace
+python -m build cryptology/aes/ -n -w
+python -m build cryptology/big_int/ -n -w
+python -m build cryptology/prim_roots/ -n -w
 ```
 
-To install the bigInteger extension change directory into `big_int` and run
+To install the extensions as Python packages run
 
 ```bash
-python setup.py install
+pip install cryptology/aes/dist/*.whl
+pip install cryptology/big_int/dist/*.whl
+pip install cryptology/prim_roots/dist/*.whl
 ```
 
 ## Usage of aesify.py

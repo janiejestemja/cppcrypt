@@ -5,8 +5,8 @@ from time import sleep
 from typing import List, Tuple
 from getpass import getpass
 
-from .aes.pyaes import key_expansion, aes_decrypt, aes_encrypt
-from .prim_roots import primitive_roots as pr
+from pyaes import key_expansion, aes_decrypt, aes_encrypt
+import primitive_roots as pr
 
 State = List[List[int]]
 

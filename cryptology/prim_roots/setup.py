@@ -18,11 +18,6 @@ ext_modules = [
 class BuildExtCommand(build_ext):
     def finalize_options(self):
         build_ext.finalize_options(self)
-
-        __builtins__.__NUMPY_SETUP__ = False
-        import pybind11
-        self.include_dirs.append(pybind11.get_include())
-
         self.include_dirs.append(pybind11.get_include(True))
 
 setup(
