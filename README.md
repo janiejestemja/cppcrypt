@@ -66,16 +66,16 @@ To build the C++ extensions run
 
 ```bash
 python -m build cryptology/aes/ -n -w
-python -m build cryptology/big_int/ -n -w
-python -m build cryptology/prim_roots/ -n -w
+python -m build cryptology/dh/big_int/ -n -w
+python -m build cryptology/dh/prim_roots/ -n -w
 ```
 
 To install the extensions as Python packages run
 
 ```bash
 pip install cryptology/aes/dist/*.whl
-pip install cryptology/big_int/dist/*.whl
-pip install cryptology/prim_roots/dist/*.whl
+pip install cryptology/dh/big_int/dist/*.whl
+pip install cryptology/dh/prim_roots/dist/*.whl
 ```
 
 ## Usage of aesify.py
