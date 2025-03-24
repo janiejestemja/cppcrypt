@@ -10,32 +10,6 @@ Goal of the project is to implement following **Features**
 - Encrypt and save text files in an encrypted state, as well as vice versa
 - Send text files via TCP using DH for key exchange followed up by AES for encryption
 
-### Directory Structure
-
----
-
-```plaintext
-├── aesify.py
-├── cryptology
-│   ├── aes
-│   │   ├── aes.cpp
-│   │   ├── aes.h
-│   │   ├── __init__.py
-│   │   ├── module.cpp
-│   │   └── setup.py
-│   ├── __init__.py
-│   ├── prim_roots
-│   │   ├── __init__.py
-│   │   ├── prim_roots.cpp
-│   │   └── setup.py
-│   └── utils.py
-├── diffify.py
-├── LICENSE.txt
-├── main.py
-├── README.md
-└── requirements.txt
-```
-
 ### Content description
 
 ---
