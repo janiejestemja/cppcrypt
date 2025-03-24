@@ -22,6 +22,31 @@ The `aesify.py` script encrypts and decrypts textfiles.
 
 The `diffify.py` script exchanges keys per DH and sends a via AES encrypted file from host to client afterwards.
 
+### Development Environment
+
+---
+
+- **Operating System**: Fedora Linux 41 (Workstation Edition)
+- **Python**: 3.12.3
+- **g++ (GCC)**: 14.2.1 (Red Hat 14.2.1-7)
+
+### Dependencies
+
+---
+
+```plaintext
+bigint          0.1.0
+build           1.2.2.post1
+numpy           2.2.4
+packaging       24.2
+pip             25.0.1
+primitive_roots 0.1
+pyaes           0.1.0
+pybind11        2.13.6
+pyproject_hooks 1.2.0
+setuptools      78.0.1
+```
+
 ## Installation
 
 --- 
