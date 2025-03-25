@@ -8,7 +8,7 @@ This is a learning project about the Diffie-Hellman (DH) key-exchange and Advanc
 
 Goal of the project is to implement following **Features**
 - Encrypt and save text files in an encrypted state, as well as vice versa
-- Send text files via TCP using DH for key exchange followed up by AES for encryption
+- Send text files via TCP using (EC) DH for key exchange followed up by AES for encryption
 
 ### Content description
 
@@ -20,7 +20,7 @@ The subdirectory `aes` contains a module named `pyaes` which contains function d
 
 The `aesify.py` script encrypts and decrypts textfiles.
 
-The `ecdiffify.py` script exchanges keys per DH and sends a via AES encrypted file from host to client afterwards.
+The `ecdhify.py` script exchanges keys per ECDH and sends a via AES encrypted file from host to client afterwards.
 
 ### Development Environment
 
@@ -110,20 +110,20 @@ To save the contents of a previously encrypted file as plaintext run
 python aesify.py -de crypted_lore.txt decrypted_lore.txt
 ```
 
-## Usage of ecdiffify.py
+## Usage of ecdhify.py
 
 ---
 
 ### Run as host:
 
 ```bash
-python ecdiffify.py h
+python ecdhify.py h
 ```
 
 ### Run as client:
 
 ```bash
-python ecdiffify.py c
+python ecdhify.py c
 ```
 
 ## License 
