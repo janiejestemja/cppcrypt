@@ -1,40 +1,31 @@
 import os
 import socket
-from random import choice, randint
+
+from random import randint
 from time import sleep
+
 from typing import List, Tuple
 from getpass import getpass
 
+from hashlib import sha256
+from hmac import new as hmac_new
+
 from pyaes import key_expansion, aes_decrypt, aes_encrypt
-import primitive_roots as pr
+from .ecdh import elliptic_curves as ec
 
 State = List[List[int]]
 
-primes = [
-        11111111111111111011,
-        11111313171722335577,
-        11138479445180240497,
-        11281963036964038421,
-        11976506590973322187,
-        12345678901234567891,
-        12345678910987654321,
-        12797382490434158663,
-        12904149405941903143,
-        13080048459073205527,
-        13169525310647365859,
-        13315146811210211749,
-        13337777797999979999,
-        13337779797779999999,
-        13464654573299691533,
-        14400146411488415129,
-        15021025033035039049,
-        15396334245663786197,
-        16808980088116168811,
-        17131175322357111317,
-        17625750738756291797,
-        18446744065119617029,
-        18446744069414584321,
-]
+secp256k1 = ec.EllipticCurve(
+        0, 
+        7, 
+        0xFFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFF_FFFFFFFE_FFFFFC2F
+)
+
+G = ec.ECPoint(
+        secp256k1, 
+        0x79BE667E_F9DCBBAC_55A06295_CE870B07_029BFCDB_2DCE28D9_59F2815B_16F81798, 
+        0x483ADA77_26A3C465_5DA4FBFC_0E1108A8_FD17B448_A6855419_9C47D08F_FB10D4B8
+)
 
 def str_to_states(text : str) -> List[State]:
     const = 16
@@ -162,34 +153,22 @@ def save_files(file_name : str, crypt_name : str, passkey : str):
     # Save encrypted file
     save_crypt(crypt_name, cipherstates)
 
-# Generate public variables on the server
-def generate_public() -> Tuple[int, int, int, int]:
-    prime = choice(primes)
-    prim_root = pr.find_primitive_roots(prime)[-1]
-    a = randint(3, 99)
+def hkdf_extract_expand(shared_secret, salt=b"some_salt", info=b"AES key"):
+    prk = hmac_new(salt, shared_secret.x.to_bytes(32, "big"), sha256).digest()
+    okm = hmac_new(prk, info + b"\x01", sha256).digest()
+    return [bit for bit in okm[:16]]
 
-    big_a = pow(prim_root, a) % prime
+def gen_keypair(curve, G):
+    pri_key = randint(1, curve.p - 1)
+    pub_key = G.multiply(pri_key)
 
-    return (a, big_a, prime, prim_root)
+    # Recursion if pub_key is point at inf
+    if pub_key == ec.ECPoint(curve, None, None):
+        return gen_keypair(curve, G)
 
-# Calculate shared secret on client
-def client_secret(big_a : int, prime : int, prim_root : int) -> Tuple[int, int, int]:
-    b = randint(3, 99)
-    big_b = pow(prim_root, b) % prime
+    return pri_key, pub_key
 
-    shared_secret = pow(big_a, b) % prime
-
-    return (b, big_b, shared_secret)
-
-# Calculate shared secret on server
-def server_secret(a : int, big_b : int, prime : int) -> int:
-    shared_secret = pow(big_b, a) % prime
-
-    return shared_secret
-
-def server(ipvfour, portnumber, text : str):
-    a, big_a, prime, prim_root = generate_public()
-
+def server(ipvfour, portnumber, text : str, curve=secp256k1, G=G):
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((ipvfour, portnumber))
     server_socket.listen()
@@ -199,23 +178,31 @@ def server(ipvfour, portnumber, text : str):
         client_socket, addr = server_socket.accept()
         print(f"Connection from {addr}")
 
+        a_pri, a_pub = gen_keypair(curve, G)
+
         # Send public variables to client
-        client_socket.send(bytes(str(big_a).encode()))
+        client_socket.send(bytes(str(a_pub.x).encode()))
         sleep(0.01)
-        client_socket.send(bytes(str(prime).encode()))
-        sleep(0.01)
-        client_socket.send(bytes(str(prim_root).encode()))
+        client_socket.send(bytes(str(a_pub.y).encode()))
         sleep(0.01)
         client_socket.send(bytes(str("exit()").encode()))
         print("Public variables send")
 
-        # Recieve public variable
-        big_b = int(client_socket.recv(1024).decode())
-        # Calculate shared secret
-        shared_secret = server_secret(a, big_b, prime)
+        # Recieve public variable from client
+        pub_vars = []
+        while True:
+            message = client_socket.recv(1024)
+            if message.decode() == "exit()":
+                break
+            else:
+                pub_vars.append(message.decode())
+
+
+        b_pub = ec.ECPoint(curve, int(pub_vars[0]), int(pub_vars[1]))
+        shared_secret = hkdf_extract_expand(b_pub.multiply(a_pri))
 
         # Expand Key
-        round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
+        round_keys = key_expansion(shared_secret)
 
         # Encrypt and send text
         states = str_to_states(text)
@@ -235,28 +222,36 @@ def server(ipvfour, portnumber, text : str):
         server_socket.close()
         break
 
-def client(ipvfour : str, portnumber: int):
+def client(ipvfour : str, portnumber: int, curve=secp256k1, G=G):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((ipvfour, portnumber))
 
-    # Recieve public variables from server
-    public_variables = []
+    # Recieve public variable from server
+    pub_vars = []
     while True:
         message = client_socket.recv(1024)
         if message.decode() == "exit()":
             break
         else:
-            public_variables.append(int(message.decode()))
+            pub_vars.append(message.decode())
 
-    # Calculate private var, public var and shared secret
-    b, big_b, shared_secret = client_secret(*public_variables)
-    round_keys = key_expansion(bytes(str(shared_secret)[:16].encode()))
+    a_pub = ec.ECPoint(curve, int(pub_vars[0]), int(pub_vars[1]))
 
-    # Send public var
-    client_socket.send(bytes(str(big_b).encode()))
+    b_pri, b_pub = gen_keypair(curve, G)
+    shared_secret = hkdf_extract_expand(a_pub.multiply(b_pri))
+
+    round_keys = key_expansion(shared_secret)
+
+    # Send public variables to server
+    client_socket.send(bytes(str(b_pub.x).encode()))
+    sleep(0.01)
+    client_socket.send(bytes(str(b_pub.y).encode()))
+    sleep(0.01)
+    client_socket.send(bytes(str("exit()").encode()))
     print("Public variables send")
-    print("Recieving cipher...")
 
+
+    print("Recieving cipher...")
     # Recieve and decipher text
     i = 0
     j = 0

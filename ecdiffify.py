@@ -1,8 +1,7 @@
 import sys
 from random import choice, randint
 
-from cryptology.utils import read_text
-from cryptology.ec_utils import client, server
+from cryptology.utils import read_text, client, server
 
 def main():
     ipvfour = input("IPv4: ")

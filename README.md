@@ -20,7 +20,7 @@ The subdirectory `aes` contains a module named `pyaes` which contains function d
 
 The `aesify.py` script encrypts and decrypts textfiles.
 
-The `diffify.py` script exchanges keys per DH and sends a via AES encrypted file from host to client afterwards.
+The `ecdiffify.py` script exchanges keys per DH and sends a via AES encrypted file from host to client afterwards.
 
 ### Development Environment
 
@@ -35,12 +35,10 @@ The `diffify.py` script exchanges keys per DH and sends a via AES encrypted file
 ---
 
 ```plaintext
-bigint          0.1.0
 build           1.2.2.post1
 numpy           2.2.4
 packaging       24.2
 pip             25.0.1
-primitive_roots 0.1
 pyaes           0.1.0
 pybind11        2.13.6
 pyproject_hooks 1.2.0
@@ -66,16 +64,12 @@ To build the C++ extensions run
 
 ```bash
 python -m build cryptology/aes/ -n -w
-python -m build cryptology/dh/big_int/ -n -w
-python -m build cryptology/dh/prim_roots/ -n -w
 ```
 
 To install the extensions as Python packages run
 
 ```bash
 pip install cryptology/aes/dist/*.whl
-pip install cryptology/dh/big_int/dist/*.whl
-pip install cryptology/dh/prim_roots/dist/*.whl
 ```
 
 ## Usage of aesify.py
@@ -114,24 +108,6 @@ To save the contents of a previously encrypted file as plaintext run
 
 ```bash
 python aesify.py -de crypted_lore.txt decrypted_lore.txt
-```
-
-## Usage of diffify.py
-
----
-
-**⚠ Warning**: The current implementation uses 64-bit prime numbers, which are insecure for real-world use.
-
-### Run as host:
-
-```bash
-python diffify.py h
-```
-
-### Run as client:
-
-```bash
-python diffify.py c
 ```
 
 ## Usage of ecdiffify.py
