@@ -39,7 +39,6 @@ build           1.2.2.post1
 numpy           2.2.4
 packaging       24.2
 pip             25.0.1
-pyaes           0.1.0
 pybind11        2.13.6
 pyproject_hooks 1.2.0
 setuptools      78.0.1
