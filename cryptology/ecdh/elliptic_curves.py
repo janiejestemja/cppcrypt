@@ -1,5 +1,5 @@
 class EllipticCurve:
-    def __init__(self, a, b, p):
+    def __init__(self, a : int, b : int, p : int):
         """Finite field F_p: y^2 = x^3 + ax + b mod p"""
         self.a = a
         self.b = b
@@ -7,11 +7,11 @@ class EllipticCurve:
 
         assert (4 * a**3 + 27 * b**2) % p != 0, "Singular curve"
 
-    def is_on_curve(self, x, y):
+    def is_on_curve(self, x : int, y : int) -> bool:
         return (y**2 - (x**3 + self.a * x + self.b)) % self.p == 0
 
 class ECPoint:
-    def __init__(self, curve, x, y):
+    def __init__(self, curve : EllipticCurve, x : int | None, y : int | None):
         """A point on an elliptic curve"""
         self.curve = curve
         self.x = x
@@ -55,7 +55,7 @@ class ECPoint:
 
         return ECPoint(self.curve, x3, y3)
 
-    def double(self):
+    def double(self) -> ECPoint:
         """Point doubling: P + P = 2P"""
         if self.x is None or self.y is None:
             return self
@@ -69,7 +69,7 @@ class ECPoint:
 
         return ECPoint(self.curve, x3, y3)
 
-    def multiply(self, k):
+    def multiply(self, k : int) -> ECPoint:
         """Scalar multiplication: k * P using double-and-add"""
         result = ECPoint(self.curve, None, None)
         temp = self # Current power of P
