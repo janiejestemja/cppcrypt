@@ -11,7 +11,7 @@ from hashlib import sha256
 from hmac import new as hmac_new
 
 from pyaes import key_expansion, aes_decrypt, aes_encrypt
-from .ecdh import elliptic_curves as ec
+from . import elliptic_curves as ec
 
 State = List[List[int]]
 

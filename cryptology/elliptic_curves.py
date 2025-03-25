@@ -55,7 +55,7 @@ class ECPoint:
 
         return ECPoint(self.curve, x3, y3)
 
-    def double(self) -> ECPoint:
+    def double(self):
         """Point doubling: P + P = 2P"""
         if self.x is None or self.y is None:
             return self
@@ -69,7 +69,7 @@ class ECPoint:
 
         return ECPoint(self.curve, x3, y3)
 
-    def multiply(self, k : int) -> ECPoint:
+    def multiply(self, k : int):
         """Scalar multiplication: k * P using double-and-add"""
         result = ECPoint(self.curve, None, None)
         temp = self # Current power of P
