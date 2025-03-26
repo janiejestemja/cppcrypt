@@ -50,7 +50,7 @@ setuptools      78.0.1
 To install dependencies for building the C++ extensions (on Fedora) run
 
 ```bash 
-sudo dnf install python3-devel, gmp-devel
+sudo dnf install python3-devel
 ```
 
 To install the necessary packages from the Python package index run
