@@ -34,6 +34,8 @@ The `ecdhify.py` script exchanges keys per ECDH and sends a via AES encrypted fi
 
 ---
 
+PyPI packages in use
+
 ```plaintext
 build           1.2.2.post1
 numpy           2.2.4
@@ -53,6 +55,12 @@ To install dependencies for building the C++ extensions (on Fedora) run
 sudo dnf install python3-devel
 ```
 
+To install dependencies for the GUI run
+
+```bash
+sudo dnf install python3-tkinter
+```
+
 To install the necessary packages from the Python package index run
 
 ```bash
@@ -70,6 +78,7 @@ To install the extensions as Python packages run
 ```bash
 pip install cryptology/aes/dist/*.whl
 ```
+
 
 ## Usage of aesify.py
 
