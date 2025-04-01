@@ -1,7 +1,7 @@
 import sys
 from getpass import getpass
 
-from cryptology.utils import check_passkey, load_files, save_files
+from cryptology.utils import check_passkey, load_file, save_file
 
 def main():
     if len(sys.argv) != 4:
@@ -20,7 +20,7 @@ def main():
         elif check_passkey(passkey) == False:
             sys.exit("Passkey check failed")
 
-        save_files(file_name=file_name, crypt_name=crypt_name, passkey=passkey)
+        save_file(file_name=file_name, crypt_name=crypt_name, passkey=passkey)
 
     # Decryption
     elif sys.argv[1] == "-de":
@@ -36,12 +36,12 @@ def main():
 
         # Priting 
         if file_name == "-p":
-            print(load_files(crypt_name=crypt_name, passkey=passkey))
+            print(load_file(crypt_name=crypt_name, passkey=passkey))
 
         # Saving to file
         else:
             with open(file_name, "w") as f:
-                f.write(load_files(crypt_name=crypt_name, passkey=passkey))
+                f.write(load_file(crypt_name=crypt_name, passkey=passkey))
 
 
 if __name__ == "__main__":

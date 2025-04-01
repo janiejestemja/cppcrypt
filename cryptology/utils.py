@@ -128,7 +128,7 @@ def check_passkey(passkey : str) -> bool:
 
     return True
 
-def load_files(crypt_name : str, passkey : str) -> str:
+def load_file(crypt_name : str, passkey : str) -> str:
     key = bytes([int(ele, 16) for ele in passkey.split(",")])
     round_keys = key_expansion(key)
 
@@ -140,7 +140,7 @@ def load_files(crypt_name : str, passkey : str) -> str:
 
     return states_to_text(decipheredstates)
 
-def save_files(file_name : str, crypt_name : str, passkey : str):
+def save_file(file_name : str, crypt_name : str, passkey : str):
     key = bytes([int(ele, 16) for ele in passkey.split(",")])
     round_keys = key_expansion(key)   
 
