@@ -3,7 +3,7 @@ from tkinter import filedialog
 
 from cryptology.utils import check_passkey, load_files
 
-crypt_path = ""
+infile_path = ""
 default_passkey = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f"
 
 def main():
@@ -26,9 +26,13 @@ def main():
     pw_entry = tk.Entry(navbar, width=32)
     pw_entry.pack(side="left")
 
+    # Encryption button
+    encrypt_btn = tk.Button(navbar, text="Encrypt", command=lambda: encrypt_txt(pw_entry))
+    encrypt_btn.pack(side="left")
+
     # Decryption button
-    crypt_button = tk.Button(navbar, text="Decrypt", command=lambda: show_password(pw_entry, text_area))
-    crypt_button.pack(side="left")
+    decrypt_btn = tk.Button(navbar, text="Decrypt", command=lambda: decrypt_txt(pw_entry, text_area))
+    decrypt_btn.pack(side="left")
 
     # Create frame for scrollbar and text
     frame = tk.Frame(root)
@@ -47,9 +51,11 @@ def main():
 
     print("App ended.")
 
-# Helperfunctions (development...)
-def show_password(pw_entry, text_area):
-    global crypt_path
+# Helperfunctions
+def encrypt_txt(pw_entry):
+    print("Not implemented")
+
+def decrypt_txt(pw_entry, text_area):
     passkey = pw_entry.get()
 
     if passkey == "":
@@ -57,14 +63,15 @@ def show_password(pw_entry, text_area):
 
     if check_passkey(passkey) == False:
         print("Passkey check failed")
-    else:
-        if crypt_path != "":
-            text_area.delete("1.0", tk.END)
-            text_area.insert(tk.END, load_files(crypt_name=crypt_path, passkey=passkey))
-    
+        return None
+
+    if infile_path != "":
+        text_area.delete("1.0", tk.END)
+        text_area.insert(tk.END, load_files(crypt_name=infile_path, passkey=passkey))
+
 # Display a textile
 def choose_file(text_area):
-    global crypt_path
+    global infile_path
 
     file_path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
     if file_path:
@@ -72,7 +79,7 @@ def choose_file(text_area):
             text_area.delete("1.0", tk.END)
             text_area.insert(tk.END, f.read())
 
-        crypt_path = file_path
+        infile_path = file_path
 
 
 if __name__ == "__main__":
