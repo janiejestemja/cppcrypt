@@ -2,3 +2,4 @@ setuptools
 build
 numpy
 pybind11
+cx_Freeze
