@@ -3,7 +3,8 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
-from cryptology.utils import check_passkey, load_file, save_file
+from pyaes import aes_encrypt, key_expansion
+from cryptology.utils import check_passkey, load_file, save_crypt, str_to_states
 
 infile_path = ""
 default_passkey = "0,1,2,3,4,5,6,7,8,9,a,b,c,d,e,f"
@@ -26,7 +27,7 @@ def main():
     choose_file_button.pack(side="left")
 
     # Encryption button
-    encrypt_btn = tk.Button(actions_frame, text="Encrypt opened File", command=lambda: encrypt_txt(pw_entry))
+    encrypt_btn = tk.Button(actions_frame, text="Encrypt opened File", command=lambda: encrypt_txt(pw_entry, text_area))
     encrypt_btn.pack(side="left")
 
      # Decryption button
@@ -67,7 +68,7 @@ def main():
     print("App ended.")
 
 # Helperfunctions
-def encrypt_txt(pw_entry):
+def encrypt_txt(pw_entry, text_area):
     passkey = pw_entry.get()
 
     if passkey == "":
@@ -80,10 +81,17 @@ def encrypt_txt(pw_entry):
     file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
 
     if file_path:
-        infile_name = os.path.basename(infile_path)
-        outfile_name = os.path.basename(file_path)
-        save_file(file_name=infile_name, crypt_name=outfile_name, passkey=passkey)
-        print("File saved")
+        text = text_area.get("1.0", "end-1c")
+        states = str_to_states(text)
+        round_keys = key_expansion(bytes([int(ele, 16) for ele in passkey.split(",")]))
+
+        cipherstates = []
+        for state in states:
+            cipherstates.append(aes_encrypt(state, round_keys))
+
+        save_crypt(file_path, cipherstates)
+
+        print("File saved at: ", file_path)
 
 def decrypt_txt(pw_entry, text_area):
     passkey = pw_entry.get()
